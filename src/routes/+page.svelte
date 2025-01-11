@@ -5,7 +5,7 @@
 	import TimeInput from '$lib/components/TimeInput.svelte';
 	//
 	let value: number = 0;
-	let ligandName: string = 'ligandName';
+	let ligandName: string;
 	let millimole: string = '23.43';
 	let micromole: string = '0.0032';
 	let spreadSheetCell_c17: number = 12;
@@ -35,7 +35,7 @@
 	//
 </script>
 
-<div class="main flex h-auto w-auto flex-col bg-gray-900">
+<div class="main flex h-auto w-auto flex-col bg-gray-950">
 	<!-- Binding Buffer -->
 	<div class="binding-buffer m-8 flex flex-col rounded rounded-md text-white">
 		<h3 class="text-2xl font-bold">Binding Buffer</h3>
@@ -44,7 +44,7 @@
 			<span class="m-2">in</span>
 			<Input bind:value label={'Total Activity (MBq)'} />
 			<span class="m-2">of</span>
-			<Input bind:value label={'Ligand Name'} />
+			<Input bind:value={ligandName} label={'Ligand Name'} />
 			<span class="m-2">in</span>
 			<Input bind:value label={'Volume (mL)'} />
 		</div>
@@ -71,7 +71,7 @@
 						<Input bind:value label={'Activity used in radiolabeling'} span={'MBq'} />
 					</div>
 				</div>
-				<div class="flex items-center gap-4">
+				<div class="mt-8 flex items-center gap-4">
 					<p class="text-lg font-bold">Radiolabelling Reaction Results</p>
 				</div>
 				<!--  -->
@@ -114,7 +114,9 @@
 		</div>
 		<!--  -->
 		<!-- WRAPPER -->
-		<div class="wrapper ml-8 flex items-start justify-between gap-8 rounded-lg text-white">
+		<div
+			class="wrapper ml-8 flex items-start justify-between gap-8 rounded-lg bg-gray-700 p-8 text-white"
+		>
 			<!-- For Radiochemists -->
 			<div class="for-radiochemists">
 				<h3 class="text-2xl font-bold">For Radiochemists</h3>
@@ -128,14 +130,18 @@
 							span={'MBq/mL'}
 						/>
 						<DateInput label={'Date'} bind:value={date} span={''} />
-						<h4 class="text-lg font-bold">Radio Labelling</h4>
-						<p>Volume of ligand/precursor: <span> {volumeOfLigandPrecursor}</span> μL</p>
-						<p>Volume of Lu-177: <span> {volumeOfLu177}</span> μL</p>
-						<p>Volume of radiolabelling buffer: <span> {volumeOfRadioLabellingBuffer}</span> μL</p>
-						<p>Total reaction volume: <span> {totalReactionVolume}</span> μL</p>
-						<Input label={'Total reaction volume:'} bind:value={actualActivity} span={'MBq'} />
+						<div class="flex flex-col gap-4">
+							<h4 class="mt-8 text-lg font-bold">Radio Labelling</h4>
+							<p>Volume of ligand/precursor: <span> {volumeOfLigandPrecursor}</span> μL</p>
+							<p>Volume of Lu-177: <span> {volumeOfLu177}</span> μL</p>
+							<p>
+								Volume of radiolabelling buffer: <span> {volumeOfRadioLabellingBuffer}</span> μL
+							</p>
+							<p>Total reaction volume: <span> {totalReactionVolume}</span> μL</p>
+							<Input label={'Total reaction volume:'} bind:value={actualActivity} span={'MBq'} />
+						</div>
 					</div>
-					<div class="flex flex-col gap-4">
+					<div class="mt-8 flex flex-col gap-4">
 						<h4 class="text-lg font-bold">Stock solution in binding buffer</h4>
 						<p>Volume of radiolabelled ligand: <span> {volumeOfRadioLabelledLigand}</span> μL</p>
 						<p>Volume of binding buffer: <span> {volumeOfBindingBuffer}</span> ml</p>
