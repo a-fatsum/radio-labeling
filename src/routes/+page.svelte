@@ -116,7 +116,7 @@
 </script>
 
 <!--  -->
-<div class="main flex w-auto bg-gray-950 text-sm text-[#ffffff]">
+<div class="main flex h-[100vh] w-auto bg-gray-950 text-sm text-[#ffffff]">
 	<!-- nav-bar WRAPPER -->
 	<div
 		class="left-nav-bar relative flex w-1/2 flex-col items-start justify-center bg-[#1f2937] p-8"
