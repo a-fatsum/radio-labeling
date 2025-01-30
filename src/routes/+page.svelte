@@ -172,7 +172,9 @@
 	<div class="wrapper flex w-full flex-col items-start justify-between bg-gray-700 p-8 text-white">
 		<!-- Radiolabelling Reaction Results -->
 		<p class=" text-2xl font-bold text-[#ffffff]">Radiolabeling Reaction Results</p>
-		<div class=" mt-2 flex w-full flex-col items-start rounded-lg border p-4">
+		<div
+			class=" mt-2 flex w-full flex-col items-start rounded-lg border border-gray-400 border-gray-400 p-4"
+		>
 			<!--  -->
 			<div class="flex w-full items-start justify-between">
 				<p>Conc. of Radiolabelled peptide:</p>
@@ -248,7 +250,7 @@
 			<div class="for-radiochemists w-[60%]">
 				<h3 class="text-2xl font-bold text-[#ffffff]">For Radiochemists</h3>
 				<div
-					class="binding-buffer mt-2 flex flex-col rounded rounded-lg border px-8 py-6 text-white"
+					class="binding-buffer mt-2 flex flex-col rounded rounded-lg border border-gray-400 px-8 py-6 text-white"
 				>
 					<Input
 						label={'Lu-177 stock activity'}
@@ -327,7 +329,7 @@
 			<div class="for-biologists flex w-1/3 flex-col">
 				<h3 class="text-2xl font-bold">For Biologists</h3>
 				<div
-					class="binding-buffer mt-2 flex flex-col gap-2 rounded rounded-lg border px-8 py-6 text-xs text-white"
+					class="binding-buffer mt-2 flex flex-col gap-2 rounded rounded-lg border border-gray-400 px-8 py-6 text-xs text-white"
 				>
 					<DisplayInfo
 						label={'Percentage of Activity yield'}
