@@ -109,9 +109,11 @@
 </script>
 
 <!--  -->
-<div class="main flex h-screen w-auto bg-gray-950 text-sm text-[#ffffff]">
+<div class="main flex w-auto bg-gray-950 text-sm text-[#ffffff]">
 	<!-- nav-bar WRAPPER -->
-	<div class="left-nav-bar relative flex w-1/2 flex-col items-start bg-[#1f2937] p-8">
+	<div
+		class="left-nav-bar relative flex w-1/2 flex-col items-start justify-center bg-[#1f2937] p-8"
+	>
 		<!-- Binding Buffer -->
 		<h3 class="mb-5 text-2xl font-bold text-[#ffffff]">Binding Buffer</h3>
 		<!-- <div class="relative"> -->
@@ -154,7 +156,11 @@
 				measurement={'MBq'}
 			/>
 		</div>
-		<!--  -->
+		<!-- print -->
+		<button
+			class="mx-auto mt-8 transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
+			>Print Report</button
+		>
 	</div>
 	<div class="wrapper flex w-full flex-col items-start justify-between bg-gray-700 p-8 text-white">
 		<!-- Radiolabelling Reaction Results -->
@@ -235,7 +241,7 @@
 			<div class="for-radiochemists w-[60%]">
 				<h3 class="text-2xl font-bold text-[#ffffff]">For Radiochemists</h3>
 				<div
-					class="binding-buffer mt-2 flex flex-col rounded rounded-md bg-gray-800 p-4 text-white"
+					class="binding-buffer mt-2 flex flex-col rounded rounded-lg border px-8 py-6 text-white"
 				>
 					<Input
 						label={'Lu-177 stock activity'}
@@ -314,7 +320,7 @@
 			<div class="for-biologists flex w-1/3 flex-col">
 				<h3 class="text-2xl font-bold">For Biologists</h3>
 				<div
-					class="binding-buffer mt-2 flex flex-col gap-4 rounded rounded-md bg-gray-800 p-4 text-xs text-white"
+					class="binding-buffer mt-2 flex flex-col gap-2 rounded rounded-lg border px-8 py-6 text-xs text-white"
 				>
 					<DisplayInfo
 						label={'Percentage of Activity yield'}

@@ -14,7 +14,7 @@
 		<input
 			{id}
 			type="number"
-			class="w-24 rounded rounded-lg border-none text-xs text-black outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+			class="w-20 rounded rounded-lg border-none text-xs text-black outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 			bind:value
 		/>
 		<span class="font-bold">{measurement}</span>
