@@ -106,6 +106,13 @@
 	//
 	$: molarActivity =
 		stockSolutionInBindingBufferActualActivity / micromolesOfPeptidesInBindingBuffer / 1000;
+	//
+
+	// Print Report
+	function handlePrint() {
+		window.print();
+	}
+	//
 </script>
 
 <!--  -->
@@ -159,7 +166,7 @@
 		<!-- print -->
 		<button
 			class="mx-auto mt-8 transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
-			>Print Report</button
+			on:click={handlePrint}>Print Report</button
 		>
 	</div>
 	<div class="wrapper flex w-full flex-col items-start justify-between bg-gray-700 p-8 text-white">
