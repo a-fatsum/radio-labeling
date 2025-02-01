@@ -8,7 +8,7 @@
 	export let value: number | string;
 </script>
 
-<div class="flex w-full items-center justify-between">
+<div class="flex w-[90%] items-center justify-between">
 	<label class="" for={id}>{label}</label>
 	<div class="flex w-1/4 items-center gap-1">
 		<input

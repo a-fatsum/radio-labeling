@@ -5,6 +5,9 @@
 	import TimeInput from '$lib/components/TimeInput.svelte';
 	import DisplayInfo from '$lib/components/DisplayInfo.svelte';
 	//
+	import PubChem from '$lib/components/PubChem.svelte';
+	import { compoundData } from '$lib/stores/pubchemStore';
+	//
 	let ligandNameInput: string;
 
 	let lu_177StockActivity: number;
@@ -116,11 +119,12 @@
 </script>
 
 <!--  -->
-<div class="main flex h-[100vh] w-auto bg-gray-950 text-sm text-[#ffffff]">
+<div class="main flex w-auto bg-gray-950 text-sm text-[#ffffff]">
 	<!-- nav-bar WRAPPER -->
 	<div
-		class="left-nav-bar relative flex w-1/2 flex-col items-start justify-center bg-[#1f2937] p-8"
+		class="left-nav-bar relative flex w-1/3 flex-col items-start justify-center bg-[#1f2937] p-8"
 	>
+		<!-- <div class="w-auto"> -->
 		<!-- Binding Buffer -->
 		<h3 class="mb-5 text-2xl font-bold text-[#ffffff]">Binding Buffer</h3>
 		<!-- <div class="relative"> -->
@@ -163,13 +167,10 @@
 				measurement={'MBq'}
 			/>
 		</div>
-		<!-- print -->
-		<button
-			class="mx-auto mt-8 transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
-			on:click={handlePrint}>Print Report</button
-		>
+
+		<!-- </div> -->
 	</div>
-	<div class="wrapper flex w-full flex-col items-start justify-between bg-gray-700 p-8 text-white">
+	<div class="wrapper flex w-auto flex-col items-start justify-between bg-gray-700 p-8 text-white">
 		<!-- Radiolabelling Reaction Results -->
 		<p class=" text-2xl font-bold text-[#ffffff]">Radiolabeling Reaction Results</p>
 		<div
@@ -245,7 +246,7 @@
 		<!--  -->
 
 		<!-- For radiochemists && Biologists -->
-		<div class=" mt-5 flex w-full justify-between">
+		<div class=" mt-5 flex w-auto justify-around gap-4">
 			<!-- For Radiochemists -->
 			<div class="for-radiochemists w-[60%]">
 				<h3 class="text-2xl font-bold text-[#ffffff]">For Radiochemists</h3>
@@ -326,7 +327,7 @@
 				</div>
 			</div>
 			<!-- For Biologists -->
-			<div class="for-biologists flex w-1/3 flex-col">
+			<div class="for-biologists flex w-auto flex-col">
 				<h3 class="text-2xl font-bold">For Biologists</h3>
 				<div
 					class="binding-buffer mt-2 flex flex-col gap-2 rounded rounded-lg border border-gray-400 px-8 py-6 text-xs text-white"
@@ -352,4 +353,23 @@
 			</div>
 		</div>
 	</div>
+	<!-- API -->
+	<div class=" flex flex-col p-8">
+		<h1>Compound Search</h1>
+		<PubChem />
+
+		{#if $compoundData}
+			<h2>Compound Details</h2>
+			<p><strong>Molecular Weight:</strong> {$compoundData.MolecularWeight}</p>
+			<p><strong>InChIKey:</strong> {$compoundData.InChIKey}</p>
+		{/if}
+
+		<!-- print -->
+		<button
+			class="mx-auto mt-8 transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
+			on:click={handlePrint}>Print Report</button
+		>
+		<!--  -->
+	</div>
+	<!-- ********** -->
 </div>
