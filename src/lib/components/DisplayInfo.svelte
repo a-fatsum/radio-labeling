@@ -4,7 +4,7 @@
 	export let value: number | string;
 </script>
 
-<div class="flex w-[90%] items-center justify-between">
+<div class="mx-auto flex w-full items-center justify-between">
 	<!-- svelte-ignore a11y_label_has_associated_control -->
 	<label>{label}</label>
 	<div class="ml-auto flex items-center gap-1 text-base font-bold">

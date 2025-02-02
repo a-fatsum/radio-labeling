@@ -8,16 +8,18 @@
 	import PubChem from '$lib/components/PubChem.svelte';
 	import { compoundData } from '$lib/stores/pubchemStore';
 	//
-	let ligandNameInput: string;
+	import { writable } from 'svelte/store';
+	//
+	let ligandNameInput: string = '';
 
 	let lu_177StockActivity: number;
-	let date: Date;
+	// let date: Date;
 	let volumeOfRadioLabellingBuffer: number;
 	let volumeOfBindingBuffer: number;
 	let theoreticalActivity: number;
 	let totalReactionVolume: number;
 	let stockSolutionInBindingBufferActualActivity: any;
-	let time: any;
+	// let time: any;
 	let percentageOfActivityYield: number;
 	let specificActivity: number;
 	let molarActivity: number;
@@ -63,9 +65,10 @@
 	$: nanomolesOfPeptidesInBindingBuffer = micromolesOfPeptidesInBindingBuffer * 1000;
 	//__________________
 	let ligandName: string;
-	$: {
-		ligandName = ligandNameInput;
-	}
+	$: ligandName = ligandNameInput; // Make sure it's updated reactively
+	// $: {
+	// 	ligandName = ligandNameInput;
+	// }
 	// Amount of Activity Needed for Reaction
 	$: amountOfActivityNeededForReaction =
 		(radiolabelingReactionVolume * totalActivity) / (volumeOfRadioLabelledLigand / 1000);
@@ -116,260 +119,237 @@
 		window.print();
 	}
 	//
+
+	// Handle Time stamp
+	let timeStamp = writable(''); // Store timestamp
+	let time = '';
+	let date = '';
+
+	function handleTimeStamp() {
+		const now = new Date();
+
+		// Format time as HH:MM (24-hour format)
+		time = now.toLocaleTimeString('en-AU', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false
+		});
+
+		// Format date to YYYY-MM-DD (for compatibility with date inputs)
+		date = now.toISOString().split('T')[0];
+	}
 </script>
 
-<!--  -->
-<div class="main flex w-auto bg-gray-950 text-sm text-[#ffffff]">
-	<!-- nav-bar WRAPPER -->
-	<div
-		class="left-nav-bar relative flex w-1/3 flex-col items-start justify-center bg-[#1f2937] p-8"
+<div class="main flex h-screen min-h-screen w-full overflow-y-auto bg-gray-700 text-sm text-white">
+	<!-- Sidebar -->
+	<aside
+		class="left-nav-bar fixed sticky sticky top-0 flex h-screen w-1/3 flex-col justify-center bg-gray-800 p-8"
 	>
-		<!-- <div class="w-auto"> -->
-		<!-- Binding Buffer -->
-		<h3 class="mb-5 text-2xl font-bold text-[#ffffff]">Binding Buffer</h3>
-		<!-- <div class="relative"> -->
-		<Input bind:value={totalConc} label={'Total Conc'} measurement={'nM'} />
-		<span class=" ml-[85%] text-xs font-light">in</span>
-		<!-- </div> -->
-		<Input bind:value={totalActivity} label={'Total Activity'} measurement={'MBq'} />
-		<span class="ml-[85%] text-xs font-light">of</span>
-		<Input bind:value={ligandNameInput} label={'Ligand Name'} measurement={''} />
-		<span class="ml-[85%] text-xs font-light">in</span>
-		<Input bind:value={volume_BindingBuffer} label={'Volume'} measurement={'mL'} />
+		<h3 class="mb-5 text-2xl font-bold">Binding Buffer</h3>
+		<Input bind:value={totalConc} label="Total Conc" measurement="nM" />
+		<span class="ml-auto text-xs font-light">in</span>
+		<Input bind:value={totalActivity} label="Total Activity" measurement="MBq" />
+		<span class="ml-auto text-xs font-light">of</span>
+		<Input bind:value={ligandNameInput} label="Ligand Name" />
+		<span class="ml-auto text-xs font-light">in</span>
+		<Input bind:value={volume_BindingBuffer} label="Volume" measurement="mL" />
 
-		<!-- Planning -->
-		<h3 class="mb-2 mt-8 text-2xl font-bold text-[#ffffff]">Planning</h3>
-		<div class="mt-2 flex w-full flex-col gap-4">
-			<DisplayInfo label={'Ligand Name'} measurement={''} value={ligandName} />
-			<Input bind:value={peptide_mw} label={'Peptide mw'} measurement={'mw'} />
-			<Input bind:value={ligandMass} label={'Ligand Mass'} measurement={'μg'} />
+		<h3 class="mb-2 mt-8 text-2xl font-bold">Planning</h3>
+		<div class="mt-2 space-y-4">
+			<DisplayInfo label="Ligand Name" value={ligandName} />
+			<Input bind:value={peptide_mw} label="Peptide mw" measurement="mw" />
+			<Input bind:value={ligandMass} label="Ligand Mass" measurement="μg" />
 			<Input
 				bind:value={ligandStockConcentration}
-				label={'Ligand stock concentration'}
-				measurement={'mg/mL'}
+				label="Ligand Stock Concentration"
+				measurement="mg/mL"
 			/>
 			<Input
 				bind:value={radiolabelingReactionVolume}
-				label={'Radiolabeling Reaction Volume'}
-				measurement={'ml'}
+				label="Radiolabeling Reaction Volume"
+				measurement="ml"
 			/>
-			<!-- <Input bind:value label={'Amount of activity needed for reaction:'} measurement={'mol'} /> -->
 			<DisplayInfo
-				label={'Amount of activity needed for reaction'}
-				value={amountOfActivityNeededForReaction
-					? amountOfActivityNeededForReaction.toFixed(4)
-					: ''}
-				measurement={'mol'}
+				label="Amount of Activity Needed for Reaction"
+				value={isNaN(amountOfActivityNeededForReaction)
+					? '00'
+					: amountOfActivityNeededForReaction.toFixed(4)}
+				measurement="mol"
 			/>
 			<Input
 				bind:value={activityUsedInRadiolabeling}
-				label={'Activity used in radiolabeling'}
-				measurement={'MBq'}
+				label="Activity Used in Radiolabeling"
+				measurement="MBq"
 			/>
 		</div>
-
-		<!-- </div> -->
-	</div>
-	<div class="wrapper flex w-auto flex-col items-start justify-between bg-gray-700 p-8 text-white">
-		<!-- Radiolabelling Reaction Results -->
-		<p class=" text-2xl font-bold text-[#ffffff]">Radiolabeling Reaction Results</p>
-		<div
-			class=" mt-2 flex w-full flex-col items-start rounded-lg border border-gray-400 border-gray-400 p-4"
-		>
-			<!--  -->
-			<div class="flex w-full items-start justify-between">
-				<p>Conc. of Radiolabelled peptide:</p>
-				<div class="flex w-1/3 justify-between">
-					<p class="text-base font-bold">
-						<span
-							>{concOfRadiolabelledPeptide_mols
-								? concOfRadiolabelledPeptide_mols.toFixed(4)
-								: ''}</span
-						>
-						<span>Mol</span>
-					</p>
-					<p class="text-base font-bold">
-						<span
-							>{concOfRadiolabelledPeptide_microMols
-								? concOfRadiolabelledPeptide_microMols.toFixed(4)
-								: ''}</span
-						>
-						<span>μM</span>
-					</p>
-
-					<p class="text-base font-bold">
-						<span
-							>{concOfRadiolabelledPeptide_microMolsBy1000
-								? concOfRadiolabelledPeptide_microMolsBy1000.toFixed(4)
-								: ''}</span
-						>
-						<span>nM</span>
-					</p>
-				</div>
-			</div>
-			<!--  -->
-			<DisplayInfo
-				label={'Specific Activity'}
-				value={radiolabelingActualActivity ? radiolabelingActualActivity.toFixed(4) : ''}
-				measurement={'MBq/µg'}
-			/>
-
-			<!--  -->
-			<div class="flex w-full items-start justify-between">
-				<p>Molar Activity:</p>
-				<!-- <div class=" ml-auto flex gap-2 text-base font-bold"> -->
-				<div class="flex w-1/2 justify-between">
-					<p class="ml-auto text-base font-bold">
-						<span
-							>{radiolabelingMolarActivity_MBq_µmol
-								? radiolabelingMolarActivity_MBq_µmol.toFixed(4)
-								: ''}</span
-						>
-						<span>MBq/µmol</span>
-					</p>
-					<!-- </div> -->
-					<!-- <div class=" ml-auto flex gap-2 text-base font-bold"> -->
-					<p class="ml-auto text-base font-bold">
-						<span
-							>{radiolabelingMolarActivity_GBq_µmol
-								? radiolabelingMolarActivity_GBq_µmol.toFixed(4)
-								: ''}</span
-						>
-						<span>GBq/µmol</span>
-					</p>
-					<!-- </div> -->
-				</div>
-			</div>
-		</div>
-
-		<!--  -->
-		<!--  -->
-
-		<!-- For radiochemists && Biologists -->
-		<div class=" mt-5 flex w-auto justify-around gap-4">
-			<!-- For Radiochemists -->
-			<div class="for-radiochemists w-[60%]">
-				<h3 class="text-2xl font-bold text-[#ffffff]">For Radiochemists</h3>
-				<div
-					class="binding-buffer mt-2 flex flex-col rounded rounded-lg border border-gray-400 px-8 py-6 text-white"
-				>
-					<Input
-						label={'Lu-177 stock activity'}
-						bind:value={lu_177StockActivity}
-						measurement={'MBq/mL'}
-					/>
-					<div class="flex flex-col gap-2">
-						<h4 class="mt-4 text-lg font-bold">Radio Labelling</h4>
-						<DisplayInfo
-							label={'Volume of ligand/precursor'}
-							value={volumeOfLigandPrecursor ? volumeOfLigandPrecursor.toExponential(4) : ''}
-							measurement={'μL'}
-						/>
-
-						<!--  -->
-
-						<DisplayInfo
-							label={'Volume of Lu-177:'}
-							measurement={'μL'}
-							value={volumeOfLu177 ? volumeOfLu177.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<DisplayInfo
-							label={'Volume of radiolabelling buffer'}
-							measurement={'μL'}
-							value={volumeOfRadioLabellingBuffer ? volumeOfRadioLabellingBuffer.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<DisplayInfo
-							label={'Total reaction volume'}
-							measurement={'μL'}
-							value={totalReactionVolume ? totalReactionVolume.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<Input
-							label={'Actual Activity:'}
-							bind:value={radiolabelingActualActivity}
-							measurement={'MBq'}
-						/>
-					</div>
-					<!--  -->
-					<div class="mt-2 flex flex-col gap-2">
-						<h4 class="mt-2 text-lg font-bold">Stock solution in binding buffer</h4>
-						<!--  -->
-						<DisplayInfo
-							label={'Volume of radiolabelled ligand'}
-							measurement={'μL'}
-							value={volumeOfRadioLabelledLigand ? volumeOfRadioLabelledLigand.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<DisplayInfo
-							label={'Volume of binding buffer'}
-							measurement={'ml'}
-							value={volumeOfBindingBuffer ? volumeOfBindingBuffer.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<DisplayInfo
-							label={'Theoretical Activity'}
-							measurement={'μL'}
-							value={theoreticalActivity ? theoreticalActivity.toFixed(4) : ''}
-						/>
-						<!--  -->
-						<Input
-							label={'Actual Activity'}
-							bind:value={stockSolutionInBindingBufferActualActivity}
-							measurement={'MBq'}
-						/>
-						<div class="flex justify-between">
-							<TimeInput label={'Time'} bind:value={time} span={'hh:mm'} />
-							<DateInput label={'Date'} bind:value={date} span={''} />
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- For Biologists -->
-			<div class="for-biologists flex w-auto flex-col">
-				<h3 class="text-2xl font-bold">For Biologists</h3>
-				<div
-					class="binding-buffer mt-2 flex flex-col gap-2 rounded rounded-lg border border-gray-400 px-8 py-6 text-xs text-white"
-				>
-					<DisplayInfo
-						label={'Percentage of Activity yield'}
-						measurement={'%'}
-						value={percentageOfActivityYield ? percentageOfActivityYield.toFixed(4) : ''}
-					/>
-					<!--  -->
-					<DisplayInfo
-						label={'Specific Activity'}
-						measurement={'μL'}
-						value={specificActivity ? specificActivity.toFixed(4) : ''}
-					/>
-					<!--  -->
-					<DisplayInfo
-						label={'Molar Activity'}
-						measurement={'GBq/µmol'}
-						value={molarActivity ? molarActivity.toFixed(4) : ''}
-					/>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- API -->
-	<div class=" flex flex-col p-8">
-		<h1>Compound Search</h1>
-		<PubChem />
-
-		{#if $compoundData}
-			<h2>Compound Details</h2>
-			<p><strong>Molecular Weight:</strong> {$compoundData.MolecularWeight}</p>
-			<p><strong>InChIKey:</strong> {$compoundData.InChIKey}</p>
-		{/if}
-
 		<!-- print -->
 		<button
 			class="mx-auto mt-8 transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
 			on:click={handlePrint}>Print Report</button
 		>
 		<!--  -->
-	</div>
-	<!-- ********** -->
+	</aside>
+
+	<!-- Main Content -->
+	<main class="flex-1 bg-gray-700 p-8">
+		<h2 class="text-2xl font-bold">Radiolabeling Reaction Results</h2>
+		<div class="justfy-center mt-2 rounded-lg border border-gray-400 p-4">
+			<div class="mb-2 flex justify-between">
+				<p>Conc. of Radiolabelled Peptide:</p>
+				<div class="flex space-x-6">
+					<p class="font-bold">
+						{isNaN(concOfRadiolabelledPeptide_mols)
+							? '00'
+							: concOfRadiolabelledPeptide_mols.toFixed(4)} Mol
+					</p>
+					<p class="font-bold">
+						{isNaN(concOfRadiolabelledPeptide_microMols)
+							? '00'
+							: concOfRadiolabelledPeptide_microMols.toFixed(4)} μM
+					</p>
+					<p class="font-bold">
+						{isNaN(concOfRadiolabelledPeptide_microMolsBy1000)
+							? '00'
+							: concOfRadiolabelledPeptide_microMolsBy1000.toFixed(4)} nM
+					</p>
+				</div>
+			</div>
+			<!-- <div class="flex justify-between bg-green-500"> -->
+			<DisplayInfo
+				label="Specific Activity"
+				value={isNaN(radiolabelingActualActivity) ? '00' : radiolabelingActualActivity.toFixed(4)}
+				measurement="MBq/µg"
+			/>
+			<!-- </div> -->
+			<div class="mt-2 flex justify-between">
+				<p>Molar Activity:</p>
+				<div class="flex space-x-6">
+					<p class="font-bold">
+						{isNaN(radiolabelingMolarActivity_MBq_µmol)
+							? '00'
+							: radiolabelingMolarActivity_MBq_µmol.toFixed(4)} MBq/µmol
+					</p>
+					<p class="font-bold">
+						{isNaN(radiolabelingMolarActivity_GBq_µmol)
+							? '00'
+							: radiolabelingMolarActivity_GBq_µmol.toFixed(4)} GBq/µmol
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Radiochemists Section -->
+		<section class="mt-5">
+			<h3 class="text-2xl font-bold">For Radiochemists</h3>
+			<div class="mt-2 flex flex-col justify-start rounded-lg border border-gray-400 p-4">
+				<div class="flex w-1/2">
+					<Input
+						label="Lu-177 Stock Activity"
+						bind:value={lu_177StockActivity}
+						measurement="MBq/mL"
+					/>
+				</div>
+				<div class="mt-4 grid grid-cols-2 gap-4">
+					<div class="flex flex-col gap-2">
+						<h4 class="text-lg font-bold">Radio Labelling</h4>
+						<DisplayInfo
+							label="Volume of Ligand/Precursor"
+							value={isNaN(volumeOfLigandPrecursor) ? '00' : volumeOfLigandPrecursor.toFixed(4)}
+							measurement="μL"
+						/>
+						<DisplayInfo
+							label="Volume of Lu-177"
+							value={isNaN(volumeOfLu177) ? '00' : volumeOfLigandPrecursor.toFixed(4)}
+							measurement="μL"
+						/>
+						<DisplayInfo
+							label="Volume of Radiolabelling Buffer"
+							value={isNaN(volumeOfRadioLabellingBuffer)
+								? '00'
+								: volumeOfRadioLabellingBuffer.toFixed(4)}
+							measurement="μL"
+						/>
+						<DisplayInfo
+							label="Total Reaction Volume"
+							value={isNaN(totalReactionVolume) ? '00' : volumeOfRadioLabellingBuffer.toFixed(4)}
+							measurement="μL"
+						/>
+						<Input
+							label="Actual Activity"
+							bind:value={radiolabelingActualActivity}
+							measurement="MBq"
+						/>
+					</div>
+					<div class="flex flex-col gap-2">
+						<h4 class="text-lg font-bold">Stock Solution in Binding Buffer</h4>
+						<DisplayInfo
+							label="Volume of Radiolabelled Ligand"
+							value={isNaN(volumeOfRadioLabelledLigand)
+								? '00'
+								: volumeOfRadioLabelledLigand.toFixed(4)}
+							measurement="μL"
+						/>
+						<DisplayInfo
+							label="Volume of Binding Buffer"
+							value={isNaN(volumeOfBindingBuffer) ? '00' : volumeOfBindingBuffer.toFixed(4)}
+							measurement="mL"
+						/>
+						<DisplayInfo
+							label="Theoretical Activity"
+							value={isNaN(theoreticalActivity) ? '00' : theoreticalActivity.toFixed(4)}
+							measurement="μL"
+						/>
+						<Input
+							label="Actual Activity"
+							bind:value={stockSolutionInBindingBufferActualActivity}
+							measurement="MBq"
+						/>
+					</div>
+				</div>
+				<!-- <div class="mt-4 flex justify-between"> -->
+				<div class=" mt-4 flex w-[80%] w-auto items-end justify-center">
+					<TimeInput label="Time" bind:value={time} span="hh:mm" />
+					<DateInput label="Date" bind:value={date} />
+					<!-- <button>Time Stamp</button> -->
+					<button
+						class="mx-auto transform rounded rounded-xl bg-orange-500 p-2 px-20 transition duration-300 ease-in-out hover:scale-110 hover:bg-orange-600"
+						on:click={handleTimeStamp}>Time Stamp</button
+					>
+				</div>
+				<!-- </div> -->
+			</div>
+		</section>
+
+		<!-- Biologists Section -->
+		<section class="mt-5">
+			<h3 class="text-2xl font-bold">For Biologists</h3>
+			<div class="mt-2 flex flex-col gap-2 rounded-lg border border-gray-400 p-4">
+				<DisplayInfo
+					label="Percentage of Activity Yield"
+					value={isNaN(percentageOfActivityYield) ? '00' : percentageOfActivityYield.toFixed(4)}
+					measurement="%"
+				/>
+				<DisplayInfo
+					label="Specific Activity"
+					value={isNaN(specificActivity) ? '00' : specificActivity.toFixed(4)}
+					measurement="μL"
+				/>
+			</div>
+		</section>
+		<!--  -->
+		<!-- API -->
+		<h3 class="mb-2 mt-4 text-2xl font-bold">Compound Search</h3>
+		<section class=" rounded-lg bg-gray-800">
+			<div class=" flex flex-col gap-2 p-8">
+				<PubChem />
+
+				{#if $compoundData}
+					<h2>Compound Details</h2>
+					<p>{$compoundData.MolecularWeight}</p>
+					<p>{$compoundData.InChIKey}</p>
+				{/if}
+			</div>
+			<!-- ********** -->
+		</section>
+	</main>
 </div>
